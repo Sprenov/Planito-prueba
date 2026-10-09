@@ -1,0 +1,127 @@
+
+html_full = r'''<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Floor Plan 360 Tour</title>
+<style>
+  html, body { margin:0; padding:0; height:100%; background:#111; font-family:sans-serif; }
+  #floorplan-container { position:relative; width:100%; height:100vh; overflow:auto; }
+  #floorplan-container img { width:100%; display:block; }
+
+  .hotspot-wrapper {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transform: translate(-50%, -50%);
+  }
+
+  .hotspot {
+    width: 24px;
+    height: 24px;
+    background: rgba(255,80,0,0.9);
+    border: 3px solid white;
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(0,0,0,0.6);
+  }
+
+  .hotspot-label {
+    margin-top: 4px;
+    background: rgba(0,0,0,0.75);
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+  }
+
+  #panorama-container {
+    display:none;
+    position:fixed; top:0; left:0;
+    width:100%; height:100%;
+    background:black;
+    z-index:999;
+  }
+  #close-btn {
+    position:absolute; top:15px; right:15px;
+    z-index:1000;
+    background:white; border:none;
+    border-radius:50%;
+    width:40px; height:40px;
+    font-size:20px;
+    cursor:pointer;
+  }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
+<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+</head>
+<body>
+
+<div id="floorplan-container">
+  <img src="floorplan.jpg" alt="Floor Plan">
+
+  <div class="hotspot-wrapper" style="top:30%; left:40%;" onclick="abrirPanorama('foto1.jpg')">
+    <div class="hotspot"></div>
+    <div class="hotspot-label">Kitchen</div>
+  </div>
+
+  <div class="hotspot-wrapper" style="top:55%; left:65%;" onclick="abrirPanorama('foto2.jpg')">
+    <div class="hotspot"></div>
+    <div class="hotspot-label">Living Room</div>
+  </div>
+
+  <div class="hotspot-wrapper" style="top:70%; left:20%;" onclick="abrirPanorama('foto3.jpg')">
+    <div class="hotspot"></div>
+    <div class="hotspot-label">Bedroom</div>
+  </div>
+</div>
+
+<div id="panorama-container">
+  <button id="close-btn" onclick="cerrarPanorama()">✕</button>
+  <div id="panorama" style="width:100%; height:100%;"></div>
+</div>
+
+<script>
+let visor = null;
+
+function abrirPanorama(imagen) {
+  document.getElementById('panorama-container').style.display = 'block';
+  visor = pannellum.viewer('panorama', {
+    type: 'equirectangular',
+    panorama: imagen,
+    autoLoad: true,
+
+    hfov: 100,
+    minHfov: 50,
+    maxHfov: 120,
+
+    pitch: 0,
+    minPitch: -45,
+    maxPitch: 45,
+
+    yaw: 0,
+    minYaw: -180,
+    maxYaw: 180
+  });
+}
+
+function cerrarPanorama() {
+  document.getElementById('panorama-container').style.display = 'none';
+  if (visor) {
+    visor.destroy();
+    visor = null;
+  }
+}
+</script>
+
+</body>
+</html>'''
+
+with open('/mnt/user-data/outputs/index.html', 'w', encoding='utf-8') as f:
+    f.write(html_full)
+
+print("Archivo guardado correctamente en /mnt/user-data/outputs/index.html")
